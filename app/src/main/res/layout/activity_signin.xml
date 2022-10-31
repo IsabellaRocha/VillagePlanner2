@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:gravity="center_vertical"
+android:orientation="vertical"
+android:padding="16dp"
+tools:context=".SignInActivity">
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Register new account" />
+
+<EditText
+    android:id="@+id/firstName"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="First Name" />
+
+<EditText
+    android:id="@+id/lastName"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Last Name" />
+
+<EditText
+    android:id="@+id/email"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Email" />
+
+<EditText
+    android:id="@+id/password"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Password"
+    android:inputType="textPassword" />
+
+<EditText
+    android:id="@+id/confirmPassword"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Confirm Password"
+    android:inputType="textPassword" />
+
+<EditText
+    android:id="@+id/profilePhoto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="URL to profile photo" />
+
+<Button
+    android:id="@+id/register"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Create Account"
+    android:onClick="createUser"/>
+
+</LinearLayout>
