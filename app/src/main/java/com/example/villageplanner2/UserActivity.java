@@ -1,5 +1,6 @@
 package com.example.villageplanner2;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserActivity {
@@ -11,8 +12,16 @@ public class UserActivity {
     private float[] coordinates;
     private List<ReminderActivity> reminders;
 
-    public void createAccount() {}
-    public void logIn(){}
+    public UserActivity(){}
+
+    public UserActivity(String firstName, String lastName, String email, String profilePhoto) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.profilePhoto = profilePhoto;
+        reminders = new ArrayList<ReminderActivity>();
+    }
+
     public List<ReminderActivity> getReminders() {
         return reminders;
     }
@@ -24,6 +33,9 @@ public class UserActivity {
     }
     public String getLastName() {
         return lastName;
+    }
+    public String getEmail() {
+        return email;
     }
     public int getID() {
         return ID;
