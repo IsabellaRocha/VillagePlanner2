@@ -46,6 +46,7 @@
         </activity>
         <activity android:name=".SignInActivity" />
         <activity android:name=".LogInActivity" />
+        <activity android:name=".ReminderActivity" />
     </application>
 
 </manifest>

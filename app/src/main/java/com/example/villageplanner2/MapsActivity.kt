@@ -1,15 +1,17 @@
 package com.example.villageplanner2
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.example.villageplanner2.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.example.villageplanner2.databinding.ActivityMapsBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -48,5 +50,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 18.0f ) )
         //mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    }
+
+    fun NavigateToMapsActivity(view: View?) {
+        val mapsIntent = Intent(applicationContext, MapsActivity::class.java)
+        startActivity(mapsIntent)
+    }
+
+    fun NavigateToRemindersActivity(view: View?) {
+        val remindersIntent = Intent(applicationContext, ReminderActivity::class.java)
+        startActivity(remindersIntent)
+    }
+
+    fun LogOut(view: View?) {
+        FirebaseAuth.getInstance().signOut()
+        val remindersIntent = Intent(applicationContext, LandingActivity::class.java)
+        startActivity(remindersIntent)
     }
 }
