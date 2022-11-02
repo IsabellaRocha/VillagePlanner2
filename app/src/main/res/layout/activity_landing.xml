@@ -9,10 +9,12 @@
     android:padding="16dp"
     tools:context=".LandingActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="VillagePlanner"/>
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="312dp"
+        android:layout_height="194dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/villageplanner_color_logo" />
 
     <Button
         android:id="@+id/login"
@@ -27,5 +29,6 @@
         android:layout_height="wrap_content"
         android:onClick="SignUp"
         android:text="Sign Up" />
+
 
 </LinearLayout>
