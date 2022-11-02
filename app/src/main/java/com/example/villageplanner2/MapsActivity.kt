@@ -1,22 +1,41 @@
 package com.example.villageplanner2
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.villageplanner2.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.example.villageplanner2.databinding.ActivityMapsBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    var mAuth: FirebaseAuth? = null
+    var user: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        mAuth = FirebaseAuth.getInstance()
+        user = mAuth!!.getCurrentUser()
+        if (user != null) {
+            // User is signed in
+        } else {
+            Toast.makeText(
+                this@MapsActivity,
+                "You must be logged in to access this page.",
+                Toast.LENGTH_LONG
+            ).show()
+            val mapIntent = Intent(this@MapsActivity, LandingActivity::class.java)
+            startActivity(mapIntent)
+        }
         super.onCreate(savedInstanceState)
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
@@ -41,8 +60,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap = googleMap
 
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        //val sydney = LatLng(-34.0, 151.0)
+        val village = LatLng(34.025839586426045, -118.28505473146768)
+        mMap.addMarker(MarkerOptions().position(village).title("Marker in USC Village"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(village))
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 18.0f ) )
+        //mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    }
+
+    fun NavigateToMapsActivity(view: View?) {
+        val mapsIntent = Intent(applicationContext, MapsActivity::class.java)
+        startActivity(mapsIntent)
+    }
+
+    fun NavigateToRemindersActivity(view: View?) {
+        val remindersIntent = Intent(applicationContext, ReminderActivity::class.java)
+        startActivity(remindersIntent)
+    }
+
+    fun LogOut(view: View?) {
+        FirebaseAuth.getInstance().signOut()
+        Toast.makeText(applicationContext, "Logout successful!", Toast.LENGTH_LONG).show()
+        val remindersIntent = Intent(applicationContext, LandingActivity::class.java)
+        startActivity(remindersIntent)
     }
 }

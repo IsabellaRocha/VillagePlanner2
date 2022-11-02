@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "375424676120",
+    "firebase_url": "https://villageplanner2-a3168-default-rtdb.firebaseio.com",
     "project_id": "villageplanner2-a3168",
     "storage_bucket": "villageplanner2-a3168.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "375424676120-udct390e3sj6t9ei707spo7jocto94i8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.villageplanner2",
+            "certificate_hash": "7a6c028e464dd2511205389f9fb0bb57263e6b8e"
+          }
+        },
         {
           "client_id": "375424676120-8nann6r5o4mpv2qs2up00ejrgcmpq395.apps.googleusercontent.com",
           "client_type": 3
