@@ -3,13 +3,16 @@ package com.example.villageplanner2;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ReminderActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
+    FirebaseUser user;
     private int ID;
     private long time;
     private boolean active;
@@ -21,6 +24,14 @@ public class ReminderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminders);
         mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        if (user != null) {
+            // User is signed in
+        } else {
+            Toast.makeText(ReminderActivity.this, "You must be logged in to access this page.", Toast.LENGTH_LONG).show();
+            Intent mapIntent = new Intent(ReminderActivity.this, LandingActivity.class);
+            startActivity(mapIntent);
+        }
     }
 
     public void NavigateToMapsActivity(View view) {

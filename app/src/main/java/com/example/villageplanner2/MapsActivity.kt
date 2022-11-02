@@ -3,6 +3,7 @@ package com.example.villageplanner2
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.villageplanner2.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -12,13 +13,29 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
+    var mAuth: FirebaseAuth? = null
+    var user: FirebaseUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        mAuth = FirebaseAuth.getInstance()
+        user = mAuth!!.getCurrentUser()
+        if (user != null) {
+            // User is signed in
+        } else {
+            Toast.makeText(
+                this@MapsActivity,
+                "You must be logged in to access this page.",
+                Toast.LENGTH_LONG
+            ).show()
+            val mapIntent = Intent(this@MapsActivity, LandingActivity::class.java)
+            startActivity(mapIntent)
+        }
         super.onCreate(savedInstanceState)
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
