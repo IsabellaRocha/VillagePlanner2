@@ -81,6 +81,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     fun LogOut(view: View?) {
         FirebaseAuth.getInstance().signOut()
+        Toast.makeText(applicationContext, "Logout successful!", Toast.LENGTH_LONG).show()
         val remindersIntent = Intent(applicationContext, LandingActivity::class.java)
         startActivity(remindersIntent)
     }

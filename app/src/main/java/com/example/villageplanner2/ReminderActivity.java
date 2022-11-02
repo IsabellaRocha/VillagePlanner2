@@ -46,6 +46,7 @@ public class ReminderActivity extends AppCompatActivity {
 
     public void LogOut(View view) {
         FirebaseAuth.getInstance().signOut();
+        Toast.makeText(getApplicationContext(), "Logout successful!", Toast.LENGTH_LONG).show();
         Intent remindersIntent = new Intent(getApplicationContext(), LandingActivity.class);
         startActivity(remindersIntent);
     }
