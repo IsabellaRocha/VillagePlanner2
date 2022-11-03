@@ -60,12 +60,29 @@ public class ReminderActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot remind : dataSnapshot.getChildren()) {
                     Reminder reminder = remind.getValue(Reminder.class);
+
                     TextView storeName = new TextView(ReminderActivity.this);
                     storeName.setText(reminder.getDestination());
+
                     TextView timeOfReminder = new TextView(ReminderActivity.this);
                     timeOfReminder.setText("Time of reminder: " + reminder.getTimeDisplay());
+
+                    Button cancelButton = new Button(ReminderActivity.this);
+                    cancelButton.setText("Cancel Reminder");
+                    cancelButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            remind.getRef().removeValue();
+                            finish();
+                            overridePendingTransition(0, 0);
+                            startActivity(getIntent());
+                            overridePendingTransition(0, 0);
+                        }
+                    });
+
                     displayReminders.addView(storeName);
                     displayReminders.addView(timeOfReminder);
+                    displayReminders.addView(cancelButton);
                 }
             }
 
