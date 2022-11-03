@@ -38,7 +38,7 @@ public class ReminderActivity extends AppCompatActivity {
     private int ID;
     private long time;
     private boolean active;
-    private int destinationID;
+    private String destination;
     private String userID;
 
     @Override
@@ -92,19 +92,27 @@ public class ReminderActivity extends AppCompatActivity {
                 SimpleDateFormat currDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date currDate = new Date();
 
+                destination = spinner.getSelectedItem().toString();
+
                 SimpleDateFormat currTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String totalTimeString = currDateFormat.format(currDate) + " " + timePickedString;
                 try {
                     Date currTime = currTimeFormat.parse(totalTimeString);
                     time = currTime.getTime();
 
-                    System.out.println(currTime);
-                    System.out.println(time);
+                    Date currTimeForValidation = new Date();
+                    long currTimeForValidationLong = currTimeForValidation.getTime();
+                    if (currTimeForValidationLong > time) {
+                        Toast.makeText(ReminderActivity.this, "This time has already passed. Set a reminder for later today.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.out.println(totalTimeString);
+                setReminder();
+                dialog.dismiss();
             }
         });
         dialog.show();
@@ -145,12 +153,6 @@ public class ReminderActivity extends AppCompatActivity {
     }
     public void setActive(boolean active) {
         this.active = active;
-    }
-    public int getDestinationID() {
-        return destinationID;
-    }
-    public void setDestinationID(int destinationID) {
-        this.destinationID = destinationID;
     }
     public int getID() {
         return ID;
