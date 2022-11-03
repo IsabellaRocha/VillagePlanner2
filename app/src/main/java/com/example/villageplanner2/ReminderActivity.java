@@ -22,6 +22,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Locale;
 
 public class ReminderActivity extends AppCompatActivity {
@@ -32,7 +37,6 @@ public class ReminderActivity extends AppCompatActivity {
 
     private int ID;
     private long time;
-    int hour, minute;
     private boolean active;
     private int destinationID;
     private String userID;
@@ -72,7 +76,6 @@ public class ReminderActivity extends AppCompatActivity {
         //Mention the name of the layout of your custom dialog.
         dialog.setContentView(R.layout.activity_setreminder);
 
-        TimePicker timePicked = dialog.findViewById(R.id.timePicker);
         Spinner spinner = (Spinner) dialog.findViewById(R.id.store);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.available_stores, android.R.layout.simple_spinner_item);
@@ -84,7 +87,24 @@ public class ReminderActivity extends AppCompatActivity {
         confirmReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TimePicker timePicked = dialog.findViewById(R.id.timePicker);
+                String timePickedString = timePicked.getHour() + ":" + timePicked.getMinute();
+                SimpleDateFormat currDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date currDate = new Date();
 
+                SimpleDateFormat currTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                String totalTimeString = currDateFormat.format(currDate) + " " + timePickedString;
+                try {
+                    Date currTime = currTimeFormat.parse(totalTimeString);
+                    time = currTime.getTime();
+
+                    System.out.println(currTime);
+                    System.out.println(time);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println(totalTimeString);
             }
         });
         dialog.show();
