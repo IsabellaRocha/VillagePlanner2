@@ -1,7 +1,12 @@
 package com.example.villageplanner2;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -15,6 +20,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -54,6 +61,8 @@ public class ReminderActivity extends AppCompatActivity {
 
              */
         }
+        createNotificationChannel();
+
         LinearLayout displayReminders = findViewById(R.id.reminders);
         root.getReference("users").child(userID).child("reminders").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -83,6 +92,25 @@ public class ReminderActivity extends AppCompatActivity {
                     displayReminders.addView(storeName);
                     displayReminders.addView(timeOfReminder);
                     displayReminders.addView(cancelButton);
+
+                    Intent intent = new Intent(ReminderActivity.this, ReminderActivity.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(ReminderActivity.this, 0, intent, 0);
+
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(ReminderActivity.this, "notifyVillagePlanner")
+                            .setSmallIcon(R.drawable.villageplanner_logo_black_transparent_background)
+                            .setContentTitle("Start heading towards " + reminder.getDestination())
+                            .setContentText("You will arrive by " + reminder.getTimeDisplay())
+                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                            // Set the intent that will fire when the user taps the notification
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true);
+
+                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ReminderActivity.this);
+                    notificationManager.notify(200, builder.build());
+
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
                 }
             }
 
@@ -173,12 +201,22 @@ public class ReminderActivity extends AppCompatActivity {
         startActivity(remindersIntent);
     }
 
-    public long calculateTime() {
-        return time;
-    }
     public void setReminder() {
         Reminder reminderToAdd = new Reminder(destination, time, userID);
         root.getReference("users").child(userID).child("reminders").push().setValue(reminderToAdd);
     }
-    public void cancelReminder(){}
+
+
+    private void createNotificationChannel() {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
+            CharSequence name = "VillagePlannerNotificationChannel";
+            String description = "Channel for VillagePlanner reminders";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notifyVillagePlanner", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 }
