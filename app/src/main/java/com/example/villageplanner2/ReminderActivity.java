@@ -1,23 +1,41 @@
 package com.example.villageplanner2;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.sql.Time;
+import java.util.Locale;
+
 public class ReminderActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser user;
+
+    Button setReminder;
+
     private int ID;
     private long time;
+    int hour, minute;
     private boolean active;
     private int destinationID;
-    private int userID;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +44,50 @@ public class ReminderActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         if (user != null) {
-            // User is signed in
+            userID = user.getUid();
         } else {
-            Toast.makeText(ReminderActivity.this, "You must be logged in to access this page.", Toast.LENGTH_LONG).show();
+            /*Toast.makeText(ReminderActivity.this, "You must be logged in to access this page.", Toast.LENGTH_LONG).show();
             Intent mapIntent = new Intent(ReminderActivity.this, LandingActivity.class);
             startActivity(mapIntent);
+
+             */
         }
+
+
+        setReminder = findViewById(R.id.setReminder);
+
+        setReminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showReminderDialog();
+            }
+        });
+    }
+
+    void showReminderDialog() {
+        final Dialog dialog = new Dialog(ReminderActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //The user will be able to cancel the dialog bu clicking anywhere outside the dialog.
+        dialog.setCancelable(true);
+        //Mention the name of the layout of your custom dialog.
+        dialog.setContentView(R.layout.activity_setreminder);
+
+        TimePicker timePicked = dialog.findViewById(R.id.timePicker);
+        Spinner spinner = (Spinner) dialog.findViewById(R.id.store);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.available_stores, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        Button confirmReminder = dialog.findViewById(R.id.confirmReminder);
+
+        confirmReminder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        dialog.show();
     }
 
     public void NavigateToMapsActivity(View view) {
@@ -54,7 +110,9 @@ public class ReminderActivity extends AppCompatActivity {
     public long calculateTime() {
         return time;
     }
-    public void setReminder() {}
+    public void setReminder() {
+
+    }
     public void cancelReminder(){}
     public long getTime() {
         return time;
@@ -79,11 +137,5 @@ public class ReminderActivity extends AppCompatActivity {
     }
     public void setID(int ID) {
         this.ID = ID;
-    }
-    public int getUserID() {
-        return userID;
-    }
-    public void setUserID(int userID) {
-        this.userID = userID;
     }
 }

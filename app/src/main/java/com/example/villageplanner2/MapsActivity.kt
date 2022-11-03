@@ -24,7 +24,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mAuth = FirebaseAuth.getInstance()
-        user = mAuth!!.getCurrentUser()
+        /*user = mAuth!!.getCurrentUser()
         if (user != null) {
             // User is signed in
         } else {
@@ -36,6 +36,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val mapIntent = Intent(this@MapsActivity, LandingActivity::class.java)
             startActivity(mapIntent)
         }
+
+         */
         super.onCreate(savedInstanceState)
 
         binding = ActivityMapsBinding.inflate(layoutInflater)

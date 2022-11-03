@@ -13,22 +13,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Set a reminder" />
-
-    <EditText
-        android:id="@+id/time"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Time" />
-
-    <EditText
-        android:id="@+id/lastName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Store" />
+        android:text="LIST OF REMINDERS" />
 
     <Button
-        android:id="@+id/register"
+        android:id="@+id/setReminder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Set Reminder" />
