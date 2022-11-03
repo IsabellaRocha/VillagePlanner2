@@ -7,7 +7,7 @@ public class UserActivity {
     private String firstName;
     private String lastName;
     private String email;
-    private int ID;
+    private int userID;
     private String profilePhoto;
     private float[] coordinates;
     private List<ReminderActivity> reminders;
@@ -36,8 +36,5 @@ public class UserActivity {
     }
     public String getEmail() {
         return email;
-    }
-    public int getID() {
-        return ID;
     }
 }

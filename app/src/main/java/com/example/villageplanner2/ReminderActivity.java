@@ -1,43 +1,40 @@
 package com.example.villageplanner2;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
-import java.util.Locale;
 
 public class ReminderActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseUser user;
+    FirebaseDatabase root;
 
     Button setReminder;
 
     private int ID;
     private long time;
-    private boolean active;
     private String destination;
     private String userID;
 
@@ -47,6 +44,7 @@ public class ReminderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reminders);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+        root = FirebaseDatabase.getInstance();
         if (user != null) {
             userID = user.getUid();
         } else {
@@ -56,10 +54,29 @@ public class ReminderActivity extends AppCompatActivity {
 
              */
         }
+        LinearLayout displayReminders = findViewById(R.id.reminders);
+        root.getReference("users").child(userID).child("reminders").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot remind : dataSnapshot.getChildren()) {
+                    Reminder reminder = remind.getValue(Reminder.class);
+                    TextView storeName = new TextView(ReminderActivity.this);
+                    storeName.setText(reminder.getDestination());
+                    TextView timeOfReminder = new TextView(ReminderActivity.this);
+                    timeOfReminder.setText("Time of reminder: " + reminder.getTimeDisplay());
+                    displayReminders.addView(storeName);
+                    displayReminders.addView(timeOfReminder);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
         setReminder = findViewById(R.id.setReminder);
-
         setReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,6 +130,10 @@ public class ReminderActivity extends AppCompatActivity {
                 }
                 setReminder();
                 dialog.dismiss();
+                finish();
+                overridePendingTransition(0, 0);
+                startActivity(getIntent());
+                overridePendingTransition(0, 0);
             }
         });
         dialog.show();
@@ -139,25 +160,8 @@ public class ReminderActivity extends AppCompatActivity {
         return time;
     }
     public void setReminder() {
-
+        Reminder reminderToAdd = new Reminder(destination, time, userID);
+        root.getReference("users").child(userID).child("reminders").push().setValue(reminderToAdd);
     }
     public void cancelReminder(){}
-    public long getTime() {
-        return time;
-    }
-    public void setTime(long time) {
-        this.time = time;
-    }
-    public boolean isActive() {
-        return active;
-    }
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-    public int getID() {
-        return ID;
-    }
-    public void setID(int ID) {
-        this.ID = ID;
-    }
 }

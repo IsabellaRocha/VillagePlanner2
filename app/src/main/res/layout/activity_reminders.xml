@@ -13,7 +13,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="LIST OF REMINDERS" />
+        android:text="Open Reminders" />
+
+    <LinearLayout
+        android:id="@+id/reminders"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 
     <Button
         android:id="@+id/setReminder"
