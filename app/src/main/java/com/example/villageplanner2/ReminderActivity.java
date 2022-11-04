@@ -2,9 +2,11 @@ package com.example.villageplanner2;
 
 import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,7 +23,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,7 +41,6 @@ public class ReminderActivity extends AppCompatActivity {
 
     Button setReminder;
 
-    private int ID;
     private long time;
     private String destination;
     private String userID;
@@ -93,24 +93,15 @@ public class ReminderActivity extends AppCompatActivity {
                     displayReminders.addView(timeOfReminder);
                     displayReminders.addView(cancelButton);
 
-                    Intent intent = new Intent(ReminderActivity.this, ReminderActivity.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(ReminderActivity.this, 0, intent, 0);
-
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(ReminderActivity.this, "notifyVillagePlanner")
-                            .setSmallIcon(R.drawable.villageplanner_logo_black_transparent_background)
-                            .setContentTitle("Start heading towards " + reminder.getDestination())
-                            .setContentText("You will arrive by " + reminder.getTimeDisplay())
-                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                            // Set the intent that will fire when the user taps the notification
-                            .setContentIntent(pendingIntent)
-                            .setAutoCancel(true);
-
-                    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ReminderActivity.this);
-                    notificationManager.notify(200, builder.build());
+                    Notification notification = setNotification("Start heading towards " + reminder.getDestination(), "You will arrive by " + reminder.getTimeDisplay());
+                    Intent intent = new Intent(ReminderActivity.this, NotificationActivity.class);
+                    intent.putExtra("notification", notification);
+                    intent.putExtra("id", (int) reminder.getTime());
+                    
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(ReminderActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, reminder.getTime(), pendingIntent);
                 }
             }
 
@@ -119,8 +110,6 @@ public class ReminderActivity extends AppCompatActivity {
 
             }
         });
-
-
         setReminder = findViewById(R.id.setReminder);
         setReminder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +117,17 @@ public class ReminderActivity extends AppCompatActivity {
                 showReminderDialog();
             }
         });
+    }
+
+    public Notification setNotification(String title, String body)
+    {
+        NotificationCompat.Builder build = new NotificationCompat.Builder(getApplicationContext(), "notifyVillagePlanner")
+                .setSmallIcon(R.drawable.villageplanner_logo_black_transparent_background)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        return build.build();
     }
 
     void showReminderDialog() {
