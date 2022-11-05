@@ -9,6 +9,13 @@
     android:padding="16dp"
     tools:context=".LogInActivity">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="312dp"
+        android:layout_height="194dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/villageplanner_color_logo" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

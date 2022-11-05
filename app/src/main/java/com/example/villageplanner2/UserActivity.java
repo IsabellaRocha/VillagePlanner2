@@ -1,5 +1,7 @@
 package com.example.villageplanner2;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,7 @@ public class UserActivity {
     private int userID;
     private String profilePhoto;
     private float[] coordinates;
+    private LatLng location;
     private List<ReminderActivity> reminders;
 
     public UserActivity(){}
@@ -20,6 +23,7 @@ public class UserActivity {
         this.email = email;
         this.profilePhoto = profilePhoto;
         reminders = new ArrayList<ReminderActivity>();
+        location = new LatLng(0, 0); 
     }
 
     public List<ReminderActivity> getReminders() {
@@ -37,4 +41,5 @@ public class UserActivity {
     public String getEmail() {
         return email;
     }
+    public LatLng getLocation() {return location;}
 }

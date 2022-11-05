@@ -1,6 +1,9 @@
 package com.example.villageplanner2
 
+import android.content.Context
 import android.content.Intent
+import android.location.LocationManager
+import android.location.LocationProvider
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -14,6 +17,9 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -21,6 +27,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityMapsBinding
     var mAuth: FirebaseAuth? = null
     var user: FirebaseUser? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mAuth = FirebaseAuth.getInstance()
@@ -47,6 +54,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
     }
 
     /**
@@ -71,6 +79,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
+
     fun NavigateToMapsActivity(view: View?) {
         val mapsIntent = Intent(applicationContext, MapsActivity::class.java)
         startActivity(mapsIntent)
@@ -87,4 +96,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val remindersIntent = Intent(applicationContext, LandingActivity::class.java)
         startActivity(remindersIntent)
     }
+
+
 }

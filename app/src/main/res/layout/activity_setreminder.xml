@@ -31,10 +31,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100px"
         android:text="Which store is this reminder for" />
+
     <Spinner
         android:id="@+id/store"
         android:layout_width="match_parent"
-        android:layout_height="200px"/>
+        android:layout_height="200px" />
 
     <Button
         android:id="@+id/confirmReminder"

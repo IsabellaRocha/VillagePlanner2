@@ -1,10 +1,11 @@
-package com.villageplanner2;
+package com.example.villageplanner2;
 
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.R;
+import android.R.layout;
+import android.R.id;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -17,24 +18,35 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 
-public class LocationActivity<FusedLocationProviderClient> extends FragmentActivity implements OnMapReadyCallback {
+public class LocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
     GoogleMap mapAPI;
     SupportMapFragment mapFragment;
-    private FusedLocationProviderClient fusedLocationProviderClient;
+    private FusedLocationProviderClient mfusedLocationProviderClient;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean locationPermissionGranted;
+
+    FirebaseAuth mAuth;
+    FirebaseDatabase root;
+    String UserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_maps);
 
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapAPI);
+        mAuth= FirebaseAuth.getInstance();
+        UserID = mAuth.getCurrentUser().getUid();
+        root = FirebaseDatabase.getInstance();
+
+        //mapFragment = getSupportFragmentManager().findFragmentById(R.id.mapAPI);
         mapFragment.getMapAsync(this);
-        fusedLocationProviderClient = (FusedLocationProviderClient) LocationServices.getFusedLocationProviderClient(this);
+        mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     @Override
@@ -44,17 +56,7 @@ public class LocationActivity<FusedLocationProviderClient> extends FragmentActiv
         mapAPI.addMarker(new MarkerOptions().position(USCVillage).title("USCVillage"));
         mapAPI.moveCamera(CameraUpdateFactory.newLatLngZoom(USCVillage, 17.0f));
 
-        getLocationPermission();
-        getDeviceLocation();
-    }
-
-
-    private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
+        //getLocationPermission();
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -65,6 +67,7 @@ public class LocationActivity<FusedLocationProviderClient> extends FragmentActiv
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
+        getDeviceLocation();
     }
 
     private void getDeviceLocation() {
@@ -75,7 +78,7 @@ public class LocationActivity<FusedLocationProviderClient> extends FragmentActiv
         System.out.println(locationPermissionGranted == true);
         try {
             if (locationPermissionGranted) {
-                Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+                Task<Location> locationResult = mfusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(this, task -> {
                     System.out.println(task.isSuccessful() == false);
                     if (task.isSuccessful()) {
@@ -86,6 +89,7 @@ public class LocationActivity<FusedLocationProviderClient> extends FragmentActiv
                         if (currentLocation != null) {
                             LatLng current = new LatLng(currentLocation.getLatitude(),
                                     currentLocation.getLongitude());
+                            root.getReference("users").child(UserID).child("location").push().setValue(current);
                             mapAPI.addMarker(new MarkerOptions().position(current).title("Current Location"));
                             mapAPI.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                     current, 15));
