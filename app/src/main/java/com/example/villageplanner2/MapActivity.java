@@ -127,7 +127,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
                             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                             System.out.println(latLng);
-                            root.getReference("users").child(UserID).child("location").push().setValue(latLng);
+                            root.getReference("users").child(UserID).child("location").setValue(latLng);
                             MarkerOptions options = new MarkerOptions().position(latLng).title("Current location");
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                             googleMap.addMarker(options);
