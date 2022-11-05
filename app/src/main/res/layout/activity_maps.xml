@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_alignParentBottom="true"
-    tools:context=".MapsActivity">
+    tools:context=".MapActivity">
 
 
     <fragment
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="1410px"
         android:layout_gravity="center"
-        tools:context=".MapsActivity" />
+        tools:context=".MapActivity" />
 
     <LinearLayout
         android:id="@+id/linearLayout1"

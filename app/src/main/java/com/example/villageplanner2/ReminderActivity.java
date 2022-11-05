@@ -185,7 +185,7 @@ public class ReminderActivity extends AppCompatActivity {
     }
 
     public void NavigateToMapsActivity(View view) {
-        Intent mapsIntent = new Intent(getApplicationContext(), MapsActivity.class);
+        Intent mapsIntent = new Intent(getApplicationContext(), MapActivity.class);
         startActivity(mapsIntent);
     }
 

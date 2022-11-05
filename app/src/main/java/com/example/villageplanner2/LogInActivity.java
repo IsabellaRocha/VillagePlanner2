@@ -49,7 +49,7 @@ public class LogInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(LogInActivity.this, "Login successful!", Toast.LENGTH_LONG).show();
-                            Intent mapIntent = new Intent(LogInActivity.this, MapsActivity.class);
+                            Intent mapIntent = new Intent(LogInActivity.this, MapActivity.class);
                             startActivity(mapIntent);
                         }
                         else {
