@@ -1,7 +1,14 @@
 package com.example.villageplanner2;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -15,6 +22,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,7 +41,6 @@ public class ReminderActivity extends AppCompatActivity {
 
     Button setReminder;
 
-    private int ID;
     private long time;
     private String destination;
     private String userID;
@@ -54,6 +61,8 @@ public class ReminderActivity extends AppCompatActivity {
 
              */
         }
+        createNotificationChannel();
+
         LinearLayout displayReminders = findViewById(R.id.reminders);
         root.getReference("users").child(userID).child("reminders").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -83,6 +92,16 @@ public class ReminderActivity extends AppCompatActivity {
                     displayReminders.addView(storeName);
                     displayReminders.addView(timeOfReminder);
                     displayReminders.addView(cancelButton);
+
+                    Notification notification = setNotification("Start heading towards " + reminder.getDestination(), "You will arrive by " + reminder.getTimeDisplay());
+                    Intent intent = new Intent(ReminderActivity.this, NotificationActivity.class);
+                    intent.putExtra("notification", notification);
+                    intent.putExtra("id", (int) reminder.getTime());
+                    
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(ReminderActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, reminder.getTime(), pendingIntent);
                 }
             }
 
@@ -91,8 +110,6 @@ public class ReminderActivity extends AppCompatActivity {
 
             }
         });
-
-
         setReminder = findViewById(R.id.setReminder);
         setReminder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +117,17 @@ public class ReminderActivity extends AppCompatActivity {
                 showReminderDialog();
             }
         });
+    }
+
+    public Notification setNotification(String title, String body)
+    {
+        NotificationCompat.Builder build = new NotificationCompat.Builder(getApplicationContext(), "notifyVillagePlanner")
+                .setSmallIcon(R.drawable.villageplanner_logo_black_transparent_background)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        return build.build();
     }
 
     void showReminderDialog() {
@@ -173,12 +201,22 @@ public class ReminderActivity extends AppCompatActivity {
         startActivity(remindersIntent);
     }
 
-    public long calculateTime() {
-        return time;
-    }
     public void setReminder() {
         Reminder reminderToAdd = new Reminder(destination, time, userID);
         root.getReference("users").child(userID).child("reminders").push().setValue(reminderToAdd);
     }
-    public void cancelReminder(){}
+
+
+    private void createNotificationChannel() {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O) {
+            CharSequence name = "VillagePlannerNotificationChannel";
+            String description = "Channel for VillagePlanner reminders";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("notifyVillagePlanner", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 }
