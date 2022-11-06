@@ -1,6 +1,7 @@
 package com.example.villageplanner2;
 import java.util.List;
 import java.util.Queue;
+import com.google.android.gms.maps.model.LatLng;
 
 public class DestinationActivity {
     private int ID;
