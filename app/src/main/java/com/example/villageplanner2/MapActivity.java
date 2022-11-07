@@ -46,6 +46,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +62,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     LatLng curLoc;
     LatLng targetLoc;
+    PolylineOptions lineOptions;
+    int counter;
+    ArrayList<PolylineOptions> polyLineList;
+
 
     FirebaseAuth mAuth;
     FirebaseDatabase root;
@@ -76,6 +81,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         root = FirebaseDatabase.getInstance();
         curLoc = new LatLng(0,0);
         targetLoc = new LatLng(0,0);
+        PolylineOptions lineOptions = new PolylineOptions();
+        ArrayList<PolylineOptions> polyLineList = new ArrayList<PolylineOptions>();
+
+        counter = 0;
 
         SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
@@ -132,20 +141,31 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
         mGoogleMap.setMyLocationEnabled(true);
 
-//        for(int i = 0; i < destinations.size(); i++){
-//            LatLng point = new LatLng(destinations.get(i).getLat(), destinations.get(i).getLng());
-//            mGoogleMap.addMarker(new MarkerOptions().position(point));
-//        }
+        for(int i = 0; i < destinations.size(); i++){
+            LatLng point = new LatLng(destinations.get(i).getLat(), destinations.get(i).getLng());
+            mGoogleMap.addMarker(new MarkerOptions().position(point).title(destinations.get(i).getStore()));
+        }
 
-        targetLoc = new LatLng(34.025509629008425, -118.28556220292455);
+        //targetLoc = new LatLng(34.025509629008425, -118.28556220292455);
 //        getCurrentLocation();
 //        System.out.println("targetLoc" + targetLoc);
 //        System.out.println("curLoc" + curLoc);
 
+
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick (Marker marker) {
+//                if(counter != 0) {
+//                    lineOptions.width(0);
+//                }
                 String markerName = marker.getTitle();
+                Toast.makeText(MapActivity.this, "Clicked location is " + markerName, Toast.LENGTH_SHORT).show();
+                targetLoc = marker.getPosition();
+                String url = getDirectionsUrl(curLoc, targetLoc);
+                System.out.println(url);
+                DownloadTask downloadTask = new DownloadTask();
+                downloadTask.execute(url);
+//                counter++;
                 return false;
             }
         });
@@ -177,18 +197,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                             curLoc = latLng;
-                            System.out.println(latLng);
-                            System.out.println("HI" + curLoc);
+//                            System.out.println(latLng);
+//                            System.out.println("HI" + curLoc);
 
                             root.getReference("users").child(UserID).child("location").setValue(latLng);
                           //  MarkerOptions options = new MarkerOptions().position(latLng).title("Current location");
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
                           //  googleMap.addMarker(options);
-                            String url = getDirectionsUrl(curLoc, targetLoc);
-                            System.out.println(url);
-                            DownloadTask downloadTask = new DownloadTask();
-
-                            downloadTask.execute(url);
+//                            String url = getDirectionsUrl(curLoc, targetLoc);
+//                            System.out.println(url);
+//                            DownloadTask downloadTask = new DownloadTask();
+//
+//                            downloadTask.execute(url);
                             return;
                         }
                     });
@@ -278,41 +298,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         Destination p18 = new Destination("Amazon", 34.025699343998674, -118.28542115943962);
         destinations.add(p18);
 
-        Destination p19 = new Destination("Bank of America", 34.025235060353964, -118.28415070344676);
-        destinations.add(p19);
 
-        Destination p20 = new Destination("CorePower Yoga", 34.03171891003997, -118.28461085453011);
-        destinations.add(p20);
-
-        Destination p21 = new Destination("FedEx", 34.025384941397455, -118.2858292865064);
-        destinations.add(p21);
-
-        Destination p22 = new Destination("Fruit + Candy", 34.024403211631366, -118.28424010828822);
-        destinations.add(p22);
-
-        Destination p23 = new Destination("Kaitlyn", 34.02428117857448, -118.28483126226855);
-        destinations.add(p23);
-
-        Destination p24 = new Destination("Mac Repair Clinic", 34.024741162645796, -118.28538271349358);
-        destinations.add(p24);
-
-        Destination p26 = new Destination("Simply Nail Bar", 34.024968033993, -118.28414552883545);
-        destinations.add(p26);
-
-        Destination p27 = new Destination("Sole Bicycles", 34.0242865294595, -118.28476912152854);
-        destinations.add(p27);
-
-        Destination p28 = new Destination("USC Credit Union", 34.026399205083244, -118.28509300996214);
-        destinations.add(p28);
-
-        Destination p29 = new Destination("USC Roski Eye Institute", 34.02454927809253, -118.28450065503901);
-        destinations.add(p29);
-
-        Destination p30 = new Destination("Village Cobbler", 34.02495461803059, -118.28407221349356);
-        destinations.add(p30);
-
-        Destination p31 = new Destination("Workshop Salon + Boutique", 34.02625828327596, -118.28473960184829);
-        destinations.add(p31);
     }
 
 //  Referenced from https://www.digitalocean.com/community/tutorials/android-google-map-drawing-route-two-points
@@ -365,7 +351,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
             ArrayList points;
-            PolylineOptions lineOptions = new PolylineOptions();
+
+//            PolylineOptions lineOptions = new PolylineOptions();
             MarkerOptions markerOptions = new MarkerOptions();
 
             for (int i = 0; i < result.size(); i++) {
@@ -390,6 +377,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 lineOptions.geodesic(true);
 
             }
+
+            //polyLineList.add(lineOptions);
 
             mGoogleMap.addPolyline(lineOptions);
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
