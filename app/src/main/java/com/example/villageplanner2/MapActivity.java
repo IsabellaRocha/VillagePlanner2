@@ -51,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
+
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     SupportMapFragment supportMapFragment;
@@ -132,10 +133,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
         mGoogleMap.setMyLocationEnabled(true);
 
-//        for(int i = 0; i < destinations.size(); i++){
-//            LatLng point = new LatLng(destinations.get(i).getLat(), destinations.get(i).getLng());
-//            mGoogleMap.addMarker(new MarkerOptions().position(point));
-//        }
+         for(int i = 0; i < destinations.size(); i++){
+             LatLng point = new LatLng(destinations.get(i).getLat(), destinations.get(i).getLng());
+             mGoogleMap.addMarker(new MarkerOptions().position(point));
+          }
 
         targetLoc = new LatLng(34.025509629008425, -118.28556220292455);
 //        getCurrentLocation();
@@ -435,8 +436,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             while((line = br.readLine()) != null) {
                 sb.append(line);
             }
+            System.out.println("sb is: " + sb);
 
             data = sb.toString();
+            System.out.println("data is: " + data);
             br.close();
         } catch (Exception e) {
             Log.d("Exception", e.toString());

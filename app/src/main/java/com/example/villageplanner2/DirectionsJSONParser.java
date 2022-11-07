@@ -101,4 +101,28 @@ public class DirectionsJSONParser {
 
         return poly;
     }
+
+    /*public HashMap<String, String> parseDirections(String jsonData);{
+        JSONArray jsonArray = null;
+        JSONObject jsonObject;
+
+        try {
+            jsonObject = new JSONObject(jsonData);
+            jsonArray = jsonObject.getJSONArray("routes");
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return getDuration(jsonArray);
+
+    }
+
+    private HashMap<String, String> getDuration(JSONArray googleDirectionsJson){
+        HashMap<String, String> googleDirectionsMap = new HashMap();
+        String duration = "";
+        String distance = "";
+        Log.d("json response", googleDirectionsJson.toString());
+        return googleDirectionsMap;
+    }*/
 }
