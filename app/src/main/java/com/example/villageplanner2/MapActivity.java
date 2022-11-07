@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -110,6 +112,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         for(int i = 0; i < destinations.size(); i++){
             LatLng point = new LatLng(destinations.get(i).getLat(), destinations.get(i).getLng());
             mGoogleMap.addMarker(new MarkerOptions().position(point));
+        }
+
+        //set locations in dropdown menu
+
+        Spinner spinnerDestinations=findViewById(R.id.spinner_destinations);
+        for (int i = 0; i < destinations.size(); i++){
+            ArrayAdapter<CharSequence>adapter=ArrayAdapter.createFromResource(this, R.array.spinner_destinations, android.R.layout.simple_spinner_item);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+            spinnerDestinations.setAdapter(adapter);
         }
     }
 
