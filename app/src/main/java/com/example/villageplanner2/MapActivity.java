@@ -3,8 +3,11 @@ package com.example.villageplanner2;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,13 +25,30 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -38,6 +58,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     FusedLocationProviderClient client;
 
     public ArrayList<Destination> destinations;
+
+    LatLng curLoc;
+    LatLng targetLoc;
 
     FirebaseAuth mAuth;
     FirebaseDatabase root;
@@ -51,6 +74,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         mAuth = FirebaseAuth.getInstance();
         UserID = mAuth.getCurrentUser().getUid();
         root = FirebaseDatabase.getInstance();
+        curLoc = new LatLng(0,0);
+        targetLoc = new LatLng(0,0);
 
         SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
@@ -107,10 +132,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         }
         mGoogleMap.setMyLocationEnabled(true);
 
-        for(int i = 0; i < destinations.size(); i++){
-            LatLng point = new LatLng(destinations.get(i).getLat(), destinations.get(i).getLng());
-            mGoogleMap.addMarker(new MarkerOptions().position(point));
-        }
+//        for(int i = 0; i < destinations.size(); i++){
+//            LatLng point = new LatLng(destinations.get(i).getLat(), destinations.get(i).getLng());
+//            mGoogleMap.addMarker(new MarkerOptions().position(point));
+//        }
+
+        targetLoc = new LatLng(34.025509629008425, -118.28556220292455);
+//        getCurrentLocation();
+//        System.out.println("targetLoc" + targetLoc);
+//        System.out.println("curLoc" + curLoc);
+
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick (Marker marker) {
+                String markerName = marker.getTitle();
+                return false;
+            }
+        });
     }
 
     private void getCurrentLocation() {
@@ -131,18 +169,27 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onSuccess(Location location) {
                 System.out.println("MADE IT");
-                System.out.println(location);
                 if (location != null) {
                     supportMapFragment.getMapAsync(new OnMapReadyCallback() {
                         @Override
                         public void onMapReady(@NonNull GoogleMap googleMap) {
 
                             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                            curLoc = latLng;
                             System.out.println(latLng);
+                            System.out.println("HI" + curLoc);
+
                             root.getReference("users").child(UserID).child("location").setValue(latLng);
                           //  MarkerOptions options = new MarkerOptions().position(latLng).title("Current location");
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
                           //  googleMap.addMarker(options);
+                            String url = getDirectionsUrl(curLoc, targetLoc);
+                            System.out.println(url);
+                            DownloadTask downloadTask = new DownloadTask();
+
+                            downloadTask.execute(url);
+                            return;
                         }
                     });
                 }
@@ -266,6 +313,140 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         Destination p31 = new Destination("Workshop Salon + Boutique", 34.02625828327596, -118.28473960184829);
         destinations.add(p31);
+    }
+
+//  Referenced from https://www.digitalocean.com/community/tutorials/android-google-map-drawing-route-two-points
+
+    private class DownloadTask extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            String data = "";
+
+            try {
+                data = downloadUrl(url[0]);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            ParserTask parserTask = new ParserTask();
+
+            parserTask.execute(result);
+
+        }
+    }
+
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>>> {
+
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                DirectionsJSONParser parser = new DirectionsJSONParser();
+
+                routes = parser.parse(jObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+            ArrayList points;
+            PolylineOptions lineOptions = new PolylineOptions();
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            for (int i = 0; i < result.size(); i++) {
+                points = new ArrayList();
+                lineOptions = new PolylineOptions();
+
+                List<HashMap<String, String>> path = result.get(i);
+
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap point = path.get(j);
+
+                    double lat = Double.parseDouble((String)point.get("lat"));
+                    double lng = Double.parseDouble((String)point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                lineOptions.addAll(points);
+                lineOptions.width(12);
+                lineOptions.color(Color.RED);
+                lineOptions.geodesic(true);
+
+            }
+
+            mGoogleMap.addPolyline(lineOptions);
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(curLoc);
+            builder.include(targetLoc);
+            LatLngBounds bound = builder.build();
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bound, 300), 1500, null);
+        }
+    }
+
+    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+        String start = "origin=" + origin.latitude + "," + origin.longitude;
+        String end = "destination=" + dest.latitude + "," + dest.longitude;
+        String sensor = "sensor=false";
+        String mode = "mode=walking";
+        String key = "&key=AIzaSyCosy6ZHbipbHHB7_-XLE7xWc_NYfF-36Q";
+
+        String parameters = start + "&" + end + "&" + sensor + "&" + mode + "&" + key;
+
+        String output = "json";
+
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+
+        return url;
+    }
+
+    private String downloadUrl(String strUrl) throws IOException {
+        String data ="";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.connect();
+
+            iStream = urlConnection.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+            StringBuffer sb = new StringBuffer();
+
+            String line = "";
+            while((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            data = sb.toString();
+            br.close();
+        } catch (Exception e) {
+            Log.d("Exception", e.toString());
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
     }
 }
 
