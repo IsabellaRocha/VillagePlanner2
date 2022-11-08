@@ -163,6 +163,7 @@ public class ReminderActivity extends AppCompatActivity {
         NotificationCompat.Builder build = new NotificationCompat.Builder(getApplicationContext(), "notifyVillagePlanner")
                 .setSmallIcon(R.drawable.villageplanner_logo_black_transparent_background)
                 .setContentTitle(title)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setContentText(body)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
