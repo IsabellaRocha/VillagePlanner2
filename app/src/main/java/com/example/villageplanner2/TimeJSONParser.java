@@ -9,57 +9,36 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-/**
- * Referenced from https://www.digitalocean.com/community/tutorials/android-google-map-drawing-route-two-points
- * Created by anupamchugh on 27/11/15.
- */
-
-public class DirectionsJSONParser {
-
-    /** Receives a JSONObject and returns a list of lists containing latitude and longitude */
-    public List<List<HashMap<String,String>>> parse(JSONObject jObject){
+public class TimeJSONParser {
+    public Map<String, String> parse(JSONObject jObject){
 
         List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String,String>>>() ;
         JSONArray jRoutes = null;
         JSONArray jLegs = null;
         JSONArray jSteps = null;
-        JSONArray jDuration = null;
-        JSONArray jDestination = null;
+        Map<String,String> durDist = new HashMap<>();
 
         try {
 
             jRoutes = jObject.getJSONArray("routes");
 
-            /** Traversing all routes */
+
             for(int i=0;i<jRoutes.length();i++){
                 jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<HashMap<String, String>>();
 
-                /** Traversing all legs */
+
                 for(int j=0;j<jLegs.length();j++){
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
 
-                    /** Traversing all steps */
+
                     for(int k=0;k<jSteps.length();k++){
                         String polyline = "";
                         polyline = (String)((JSONObject)((JSONObject)jSteps.get(k)).get("polyline")).get("points");
                         List list = decodePoly(polyline);
 
-                        /** Traversing all points */
                         for(int l=0;l <list.size();l++){
                             HashMap<String, String> hm = new HashMap<String, String>();
                             hm.put("lat", Double.toString(((LatLng)list.get(l)).latitude) );
@@ -71,19 +50,25 @@ public class DirectionsJSONParser {
                 }
             }
 
+            JSONObject legsObjects = jLegs.getJSONObject(0);
+            JSONObject distance = legsObjects.getJSONObject("distance");
+            String distance1 = distance.getString("text");
+            System.out.println("Distance is: " + distance1);
+            JSONObject duration = legsObjects.getJSONObject("duration");
+            String duration1 = duration.getString("text");
+            System.out.println("Duration is: " + duration1);
+
+            durDist.put(duration1, distance1);
+//get the
+
         } catch (JSONException e) {
             e.printStackTrace();
         }catch (Exception e){
         }
 
-        return routes;
+        return durDist;
     }
 
-
-    /**
-     * Method to decode polyline points
-     * Courtesy : http://jeffreysambells.com/2010/05/27/decoding-polylines-from-google-maps-direction-api-with-java
-     * */
     private List decodePoly(String encoded) {
 
         List poly = new ArrayList();
@@ -119,3 +104,4 @@ public class DirectionsJSONParser {
     }
 
 }
+

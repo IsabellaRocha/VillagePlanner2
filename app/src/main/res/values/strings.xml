@@ -7,35 +7,23 @@
 
     <string-array name="spinner_destinations">
         <item>Amazon</item>
-        <item>Bank of America</item>
         <item>CAVA</item>
         <item>Chinese Street Food</item>
         <item>City Tacos</item>
-        <item>CorePower Yoga</item>
         <item>DULCE</item>
-        <item>FedEx</item>
-        <item>Fruit + Candy</item>
         <item>Greenleaf</item>
         <item>HoneyBird</item>
         <item>Il Giardino</item>
         <item>Insomnia Cookies</item>
-        <item>Kaitlyn</item>
         <item>Kobunga</item>
-        <item>Mac Repair Clinic</item>
         <item>Ramen Kenjo</item>
         <item>Rock n Reilly\'s</item>
         <item>Sammiche Shoppe</item>
-        <item>Simply Nail Bar</item>
-        <item>Sole Bicycles</item>
         <item>Starbucks</item>
         <item>Stout Burgers</item>
         <item>Sunlife Organics</item>
         <item>Target</item>
         <item>Trader Joe\s</item>
-        <item>USC Credit Union</item>
-        <item>USC Roski Eye Institute</item>
-        <item>Village Cobbler</item>
-        <item>Workshop Salon + Boutique</item>
 
     </string-array>
 
