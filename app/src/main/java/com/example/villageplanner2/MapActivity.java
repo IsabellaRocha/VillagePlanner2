@@ -1,14 +1,20 @@
 package com.example.villageplanner2;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -37,6 +43,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -60,13 +67,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     FusedLocationProviderClient client;
 
     public ArrayList<Destination> destinations;
+    public ArrayList<UserActivity> users;
 
     LatLng curLoc;
     LatLng targetLoc;
     PolylineOptions lineOptions;
     int counter;
     ArrayList<PolylineOptions> polyLineList;
-
+    ImageView imageView;
 
     FirebaseAuth mAuth;
     FirebaseDatabase root;
@@ -84,6 +92,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         targetLoc = new LatLng(0,0);
         lineOptions = new PolylineOptions();
         polyLineList = new ArrayList<PolylineOptions>();
+        users = new ArrayList<UserActivity>();
 
         counter = 0;
 
@@ -93,6 +102,36 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
         destinations = new ArrayList<Destination>();
         storeInfo();
+
+        imageView = (ImageView) findViewById(R.id.imageView);
+        root.getReference("users").child(UserID).child("profilePhoto").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String imageURL = dataSnapshot.getValue(String.class);
+                Picasso.with(MapActivity.this).load(imageURL).into(imageView);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        root.getReference("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren()) {
+                    System.out.println(ds);
+                    UserActivity user = ds.getValue(UserActivity.class);
+                    users.add(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -159,9 +198,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 //                if(counter != 0) {
 //                    lineOptions.width(0);
 //                }
+                int numInLine = 0;
                 if (polyLineList.size() > 0) {
                     mGoogleMap.clear();
-                    System.out.println("MADE IT and didn't clear list");
                     for(int i = 0; i < destinations.size(); i++){
                         LatLng point = new LatLng(destinations.get(i).getLat(), destinations.get(i).getLng());
                         mGoogleMap.addMarker(new MarkerOptions().position(point).title(destinations.get(i).getStore()));
@@ -169,12 +208,29 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 }
 
                 String markerName = marker.getTitle();
-                Toast.makeText(MapActivity.this, "Clicked location is " + markerName, Toast.LENGTH_SHORT).show();
                 targetLoc = marker.getPosition();
                 String url = getDirectionsUrl(curLoc, targetLoc);
-                System.out.println(url);
                 DownloadTask downloadTask = new DownloadTask();
                 downloadTask.execute(url);
+
+                for (int idx = 0; idx < users.size(); idx++) {
+                    com.google.android.gms.maps.model.LatLng mapsLatLng =
+                            new com.google.android.gms.maps.model.LatLng(users.get(idx).getLocation().getLatitude(),
+                                    users.get(idx).getLocation().getLongitude());
+                    System.out.println("-------------------");
+                    System.out.println("UserLoc: " + mapsLatLng);
+                    System.out.println("-------------------");
+                    System.out.println("TargetLoc: " + targetLoc);
+                    System.out.println("-------------------");
+
+                    if(mapsLatLng.equals(targetLoc)) {
+                        System.out.println("MADE IT TO QUEUE TIME");
+
+                        numInLine++;
+                    }
+                }
+                int queuetime = numInLine*5;
+                Toast.makeText(MapActivity.this, "Clicked location is " + markerName + "\nWait: " + queuetime + " minutes", Toast.LENGTH_SHORT).show();
 
 //                counter++;
                 return false;
