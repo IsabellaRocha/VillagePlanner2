@@ -18,6 +18,7 @@ public class Destination {
         this.store = store;
         this.lat = lat;
         this.lng = lng;
+        latlng = new LatLng(lat, lng);
     }
 
     public Destination(String store){
@@ -30,6 +31,10 @@ public class Destination {
 
     public double getLng() {
         return lng;
+    }
+
+    public LatLng getLatlng() {
+        return latlng;
     }
 
     public String getStore() {

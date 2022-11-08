@@ -121,7 +121,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                    System.out.println(ds);
                     UserActivity user = ds.getValue(UserActivity.class);
                     users.add(user);
                 }
@@ -186,19 +185,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             mGoogleMap.addMarker(new MarkerOptions().position(point).title(destinations.get(i).getStore()));
         }
 
-        //targetLoc = new LatLng(34.025509629008425, -118.28556220292455);
-//        getCurrentLocation();
-//        System.out.println("targetLoc" + targetLoc);
-//        System.out.println("curLoc" + curLoc);
 
 
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick (Marker marker) {
-//                if(counter != 0) {
-//                    lineOptions.width(0);
-//                }
-                int numInLine = 0;
                 if (polyLineList.size() > 0) {
                     mGoogleMap.clear();
                     for(int i = 0; i < destinations.size(); i++){
@@ -213,29 +204,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 DownloadTask downloadTask = new DownloadTask();
                 downloadTask.execute(url);
 
-                for (int idx = 0; idx < users.size(); idx++) {
-                    com.google.android.gms.maps.model.LatLng mapsLatLng =
-                            new com.google.android.gms.maps.model.LatLng(users.get(idx).getLocation().getLatitude(),
-                                    users.get(idx).getLocation().getLongitude());
-                    System.out.println("-------------------");
-                    System.out.println("UserLoc: " + mapsLatLng);
-                    System.out.println("-------------------");
-                    System.out.println("TargetLoc: " + targetLoc);
-                    System.out.println("-------------------");
+                Toast.makeText(MapActivity.this, "Clicked location is " + markerName + "\nWait: " + getQueueTime(targetLoc) + " minutes", Toast.LENGTH_SHORT).show();
 
-                    if(mapsLatLng.equals(targetLoc)) {
-                        System.out.println("MADE IT TO QUEUE TIME");
-
-                        numInLine++;
-                    }
-                }
-                int queuetime = numInLine*5;
-                Toast.makeText(MapActivity.this, "Clicked location is " + markerName + "\nWait: " + queuetime + " minutes", Toast.LENGTH_SHORT).show();
-
-//                counter++;
                 return false;
             }
         });
+    }
+
+    public int getQueueTime(LatLng desiredLoc) {
+        int numInLine = 0;
+        for (int idx = 0; idx < users.size(); idx++) {
+            com.google.android.gms.maps.model.LatLng mapsLatLng =
+                    new com.google.android.gms.maps.model.LatLng(users.get(idx).getLocation().getLatitude(),
+                            users.get(idx).getLocation().getLongitude());
+            if(mapsLatLng.equals(desiredLoc)) {
+                numInLine++;
+            }
+        }
+        int queuetime = numInLine*5;
+        return queuetime;
     }
 
     private void getCurrentLocation() {
@@ -457,6 +444,10 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             LatLngBounds bound = builder.build();
             mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bound, 300), 1500, null);
         }
+    }
+
+    public ArrayList<Destination> getDestinations() {
+        return destinations;
     }
 
     private String getDirectionsUrl(LatLng origin, LatLng dest) {

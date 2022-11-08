@@ -7,13 +7,15 @@ public class Reminder {
     private String destination;
     private long time;
     private String userID;
+    private long queueTime;
 
     public Reminder(){}
 
-    public Reminder(String destination, long time, String userID) {
+    public Reminder(String destination, long time, String userID, long queueTime) {
         this.destination = destination;
         this.time = time;
         this.userID = userID;
+        this.queueTime = queueTime;
     }
 
     public String getDestination() {
@@ -41,5 +43,9 @@ public class Reminder {
     }
     public long getTime() {
         return time;
+    }
+
+    public long getQueueTime() {
+        return queueTime;
     }
 }
