@@ -86,7 +86,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         setContentView(R.layout.activity_maps);
 
         mAuth = FirebaseAuth.getInstance();
-        UserID = mAuth.getCurrentUser().getUid();
+        if (mAuth.getCurrentUser() != null) {
+            UserID = mAuth.getCurrentUser().getUid();
+        } else {
+            Toast.makeText(MapActivity.this, "You must be logged in to access this page.", Toast.LENGTH_LONG).show();
+            Intent mapIntent = new Intent(MapActivity.this, LandingActivity.class);
+            startActivity(mapIntent);
+        }
         root = FirebaseDatabase.getInstance();
         curLoc = new LatLng(0,0);
         targetLoc = new LatLng(0,0);
@@ -247,20 +253,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                         public void onMapReady(@NonNull GoogleMap googleMap) {
 
                             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
                             curLoc = latLng;
-//                            System.out.println(latLng);
-//                            System.out.println("HI" + curLoc);
-
                             root.getReference("users").child(UserID).child("location").setValue(latLng);
-                          //  MarkerOptions options = new MarkerOptions().position(latLng).title("Current location");
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-                          //  googleMap.addMarker(options);
-//                            String url = getDirectionsUrl(curLoc, targetLoc);
-//                            System.out.println(url);
-//                            DownloadTask downloadTask = new DownloadTask();
-//
-//                            downloadTask.execute(url);
                             return;
                         }
                     });
@@ -444,10 +439,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             LatLngBounds bound = builder.build();
             mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bound, 300), 1500, null);
         }
-    }
-
-    public ArrayList<Destination> getDestinations() {
-        return destinations;
     }
 
     private String getDirectionsUrl(LatLng origin, LatLng dest) {

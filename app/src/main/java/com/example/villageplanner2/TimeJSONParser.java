@@ -58,7 +58,8 @@ public class TimeJSONParser {
             String duration1 = duration.getString("text");
             System.out.println("Duration is: " + duration1);
 
-            durDist.put(duration1, distance1);
+            durDist.put("Duration", duration1);
+            durDist.put("Distance", distance1);
 //get the
 
         } catch (JSONException e) {

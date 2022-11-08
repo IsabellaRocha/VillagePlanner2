@@ -8,8 +8,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
@@ -24,7 +27,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,9 +39,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ReminderActivity extends AppCompatActivity {
@@ -50,6 +68,7 @@ public class ReminderActivity extends AppCompatActivity {
     private String destination;
     private String userID;
     private long queueTime;
+    private LatLng curLoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +78,14 @@ public class ReminderActivity extends AppCompatActivity {
         user = mAuth.getCurrentUser();
         root = FirebaseDatabase.getInstance();
         users = new ArrayList<UserActivity>();
+        curLoc = new LatLng(0, 0);
         queueTime = 0;
         if (user != null) {
             userID = user.getUid();
         } else {
-            /*Toast.makeText(ReminderActivity.this, "You must be logged in to access this page.", Toast.LENGTH_LONG).show();
+            Toast.makeText(ReminderActivity.this, "You must be logged in to access this page.", Toast.LENGTH_LONG).show();
             Intent mapIntent = new Intent(ReminderActivity.this, LandingActivity.class);
             startActivity(mapIntent);
-
-             */
         }
         createNotificationChannel();
         root.getReference("users").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -77,6 +95,20 @@ public class ReminderActivity extends AppCompatActivity {
                     UserActivity user = ds.getValue(UserActivity.class);
                     users.add(user);
                 }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        root.getReference("users").child(userID).child("location").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserLatLng userLoc = dataSnapshot.getValue(UserLatLng.class);
+                curLoc = new com.google.android.gms.maps.model.LatLng(userLoc.getLatitude(),
+                        userLoc.getLongitude());
+
             }
 
             @Override
@@ -118,7 +150,9 @@ public class ReminderActivity extends AppCompatActivity {
                     displayReminders.addView(timeOfReminder);
                     displayReminders.addView(cancelButton);
 
-                    Notification notification = setNotification("Start heading towards " + reminder.getDestination(), "You will arrive by " + reminder.getTimeDisplay() + "\nThe current queue time is " + reminder.getQueueTime() / 60000 + " minutes");
+                    Notification notification = setNotification("Start heading towards " + reminder.getDestination(), "You will arrive by " + reminder.getTimeDisplay() +
+                            ". The current queue time is " + reminder.getQueueTime() / 60000 + " minutes." +
+                            " It will take you " + reminder.getDurationTime()/60000 + " minutes to walk there");
                     Intent intent = new Intent(ReminderActivity.this, NotificationActivity.class);
                     intent.putExtra("notification", notification);
                     intent.putExtra("id", (int) reminder.getTime());
@@ -126,7 +160,7 @@ public class ReminderActivity extends AppCompatActivity {
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(ReminderActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
                     AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, reminder.getTime() - reminder.getQueueTime(), pendingIntent);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, reminder.getTime() - reminder.getQueueTime() - reminder.getDurationTime(), pendingIntent);
                 }
             }
 
@@ -204,9 +238,8 @@ public class ReminderActivity extends AppCompatActivity {
                     }
                 }
                 queueTime = (long) getQueueTime(desiredDestination.getLatlng()) * 60000;
-                System.out.println("__________");
-                System.out.println(queueTime);
-                System.out.println("__________");
+                String url = getDirectionsUrl(curLoc, desiredDestination.getLatlng());
+
 
                 SimpleDateFormat currTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                 String totalTimeString = currDateFormat.format(currDate) + " " + timePickedString;
@@ -225,12 +258,9 @@ public class ReminderActivity extends AppCompatActivity {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-                setReminder();
+                DownloadTask downloadTask = new DownloadTask();
+                downloadTask.execute(url);
                 dialog.dismiss();
-                finish();
-                overridePendingTransition(0, 0);
-                startActivity(getIntent());
-                overridePendingTransition(0, 0);
             }
         });
         dialog.show();
@@ -253,8 +283,8 @@ public class ReminderActivity extends AppCompatActivity {
         startActivity(remindersIntent);
     }
 
-    public void setReminder() {
-        Reminder reminderToAdd = new Reminder(destination, time, userID, queueTime);
+    public void setReminder(long durationTime) {
+        Reminder reminderToAdd = new Reminder(destination, time, userID, queueTime, durationTime);
         root.getReference("users").child(userID).child("reminders").push().setValue(reminderToAdd);
     }
 
@@ -328,5 +358,121 @@ public class ReminderActivity extends AppCompatActivity {
         destinations.add(p18);
 
 
+    }
+
+    private class DownloadTask extends AsyncTask<String, Integer, String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            String data = "";
+
+            try {
+                data = downloadUrl(url[0]);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            ParserTask parserTask = new ParserTask();
+
+            parserTask.execute(result);
+
+        }
+    }
+
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>>> {
+
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+            Map<String, String> durDist = new HashMap<>();
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                DirectionsJSONParser parser = new DirectionsJSONParser();
+                TimeJSONParser parser1 = new TimeJSONParser();
+
+                routes = parser.parse(jObject);
+                durDist = parser1.parse(jObject);
+                System.out.println("Durdist is: " + durDist);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String duration = durDist.get("Duration");
+
+            long durationTime = Long.parseLong(duration.substring(0, duration.length() - 5)) * 60000;
+
+            setReminder(durationTime);
+
+            finish();
+            overridePendingTransition(0, 0);
+            startActivity(getIntent());
+            overridePendingTransition(0, 0);
+
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+        }
+    }
+
+    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+        String start = "origin=" + origin.latitude + "," + origin.longitude;
+        String end = "destination=" + dest.latitude + "," + dest.longitude;
+        String sensor = "sensor=false";
+        String mode = "mode=walking";
+        String key = "&key=AIzaSyCosy6ZHbipbHHB7_-XLE7xWc_NYfF-36Q";
+
+        String parameters = start + "&" + end + "&" + sensor + "&" + mode + "&" + key;
+
+        String output = "json";
+
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+
+        return url;
+    }
+
+    private String downloadUrl(String strUrl) throws IOException {
+        String data ="";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.connect();
+
+            iStream = urlConnection.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+            StringBuffer sb = new StringBuffer();
+
+            String line = "";
+            while((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            data = sb.toString();
+            br.close();
+        } catch (Exception e) {
+            Log.d("Exception", e.toString());
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
     }
 }

@@ -8,14 +8,16 @@ public class Reminder {
     private long time;
     private String userID;
     private long queueTime;
+    private long durationTime;
 
     public Reminder(){}
 
-    public Reminder(String destination, long time, String userID, long queueTime) {
+    public Reminder(String destination, long time, String userID, long queueTime, long durationTime) {
         this.destination = destination;
         this.time = time;
         this.userID = userID;
         this.queueTime = queueTime;
+        this.durationTime = durationTime;
     }
 
     public String getDestination() {
@@ -47,5 +49,9 @@ public class Reminder {
 
     public long getQueueTime() {
         return queueTime;
+    }
+
+    public long getDurationTime() {
+        return durationTime;
     }
 }
