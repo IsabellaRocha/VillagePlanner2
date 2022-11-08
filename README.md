@@ -17,6 +17,6 @@ About VillagePlanner:
   
 Requirements:
   Device: Use the pixel 2 API 24 to run this app
-  Location: On the emulator tab click the three dots to correctly set your location. Android Studio randomly chooses a location for your emulator, so it needs to be reset to the correct location.
+  Location: On the emulator tab click the three dots to correctly set your location. Android Studio randomly chooses a location for your emulator, so it needs to be 		reset to the correct location.
  
  
