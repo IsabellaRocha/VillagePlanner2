@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 import com.example.villageplanner2.Destination;
 import com.google.android.gms.maps.model.LatLng;
 
-public class DestinationTests {
+public class TestDestination {
     @Test
     public void testGetLat() {
         Destination temp = new Destination ("Target", 12.213, 19.798);

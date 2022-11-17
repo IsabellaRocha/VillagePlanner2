@@ -6,6 +6,11 @@ public class UserLatLng {
 
     public UserLatLng() {}
 
+    public UserLatLng(double lat, double lon) {
+        latitude = lat;
+        longitude = lon;
+    }
+
     public Double getLatitude() {
         return latitude;
     }
