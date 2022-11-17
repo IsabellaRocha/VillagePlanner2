@@ -18,30 +18,38 @@ public class TestReminder {
     @Test
     public void TestGetDestination() {
         Reminder testReminder = new Reminder(destinationName, timeAM12, userID, queueTime, durationTime);
-        Assert.assertEquals(destinationName, testReminder.getDestination());
+        Assert.assertEquals("Test getDestination", destinationName, testReminder.getDestination());
     }
     @Test
     public void TestGetTime() {
         Reminder testReminder = new Reminder(destinationName, timeAM12, userID, queueTime, durationTime);
-        Assert.assertEquals(timeAM12, testReminder.getTime());
+        Assert.assertEquals("Test getTime", timeAM12, testReminder.getTime());
     }
     @Test
     public void TestGetQueueTime() {
         Reminder testReminder = new Reminder(destinationName, timeAM12, userID, queueTime, durationTime);
-        Assert.assertEquals(queueTime, testReminder.getQueueTime());
+        Assert.assertEquals("Test getQueueTime", queueTime, testReminder.getQueueTime());
     }
     @Test
     public void TestGetDurationTime() {
         Reminder testReminder = new Reminder(destinationName, timeAM12, userID, queueTime, durationTime);
-        Assert.assertEquals(durationTime, testReminder.getDurationTime());
+        Assert.assertEquals("Test getDurationTime", durationTime, testReminder.getDurationTime());
     }
     @Test
     public void TestGetTimeDisplayAM() {
         Reminder testReminderAM12 = new Reminder(destinationName, timeAM12, userID, queueTime, durationTime);
-        Assert.assertEquals(timeAM12String, testReminderAM12.getTimeDisplay());
+        Assert.assertEquals("Display time for 12AM", timeAM12String, testReminderAM12.getTimeDisplay());
         Reminder testReminderPM12 = new Reminder(destinationName, timePM12, userID, queueTime, durationTime);
-        Assert.assertEquals(timePM12String, testReminderPM12.getTimeDisplay());
+        Assert.assertEquals("Display time for 12PM", timePM12String, testReminderPM12.getTimeDisplay());
         Reminder testReminderPast12 = new Reminder(destinationName, timePast12, userID, queueTime, durationTime);
-        Assert.assertEquals(timePast12String, testReminderPast12.getTimeDisplay());
+        Assert.assertEquals("Display time for past 12PM", timePast12String, testReminderPast12.getTimeDisplay());
+    }
+    @Test
+    public void TestEmptyReminder() {
+        Reminder testReminder = new Reminder();
+        Assert.assertNull("Get destination returns null", testReminder.getDestination());
+        Assert.assertEquals("GetTime returns 0", 0, testReminder.getTime());
+        Assert.assertEquals("GetQueueTime returns 0", 0, testReminder.getQueueTime());
+        Assert.assertEquals("GetDurationTime returns 0", 0, testReminder.getDurationTime());
     }
 }
