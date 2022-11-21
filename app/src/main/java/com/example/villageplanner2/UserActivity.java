@@ -29,4 +29,8 @@ public class UserActivity {
         return email;
     }
     public UserLatLng getLocation() {return location;}
+
+    public void setLocation(UserLatLng location) {
+        this.location = location;
+    }
 }
