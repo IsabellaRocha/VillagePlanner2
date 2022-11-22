@@ -33,4 +33,22 @@ public class TestUserActivity {
         UserActivity testUserActivity = new UserActivity(firstName, lastName, email, profilePhoto);
         Assert.assertEquals("Test profilePhoto", profilePhoto, testUserActivity.getProfilePhoto());
     }
+
+    @Test
+    public void TestSetLocation() {
+        UserActivity testUserActivity = new UserActivity(firstName, lastName, email, profilePhoto);
+        UserLatLng testLatLng = new UserLatLng(100.987, 9.879);
+        testUserActivity.setLocation(testLatLng);
+        Assert.assertEquals("Test setLocation", testLatLng, testUserActivity.getLocation());
+    }
+
+    @Test
+    public void TestEmptyUser() {
+        UserActivity testUserActivity = new UserActivity();
+        Assert.assertNull(testUserActivity.getEmail());
+        Assert.assertNull(testUserActivity.getFirstName());
+        Assert.assertNull(testUserActivity.getLastName());
+        Assert.assertNull(testUserActivity.getProfilePhoto());
+        Assert.assertNull(testUserActivity.getLocation());
+    }
 }
