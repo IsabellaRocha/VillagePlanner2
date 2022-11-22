@@ -86,6 +86,7 @@ public class TestSetReminder {
         onView(withId(R.id.store)).perform(click());
         onData(anything()).inRoot(isPlatformPopup()).atPosition(16).perform(click());
         onView(withId(R.id.confirmReminder)).perform(click());
-        onView(withText("Set a reminder")).inRoot(isDialog()).check(matches(isDisplayed()));
+        wait(2000);
+        onView(withId(R.id.timePicker)).inRoot(isDialog()).check(matches(isDisplayed()));
     }
 }

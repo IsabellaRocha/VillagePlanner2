@@ -30,10 +30,28 @@ public class TestLogin {
 
     @Test
     public void testLogin() throws InterruptedException {
-        onView(withId(R.id.email)).perform(typeText("aqjia@usc.edu"), closeSoftKeyboard());
+        onView(withId(R.id.email)).perform(typeText("irocha@usc.edu"), closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText("123456"), closeSoftKeyboard());
         onView(withId(R.id.login)).perform(click());
         Thread.sleep(10000);
         onView(withId(R.id.map)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testWrongPassword() throws InterruptedException {
+        onView(withId(R.id.email)).perform(typeText("irocha@usc.edu"), closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(typeText("1234567"), closeSoftKeyboard());
+        onView(withId(R.id.login)).perform(click());
+        Thread.sleep(10000);
+        onView(withId(R.id.login)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testInvalidEmail() throws InterruptedException {
+        onView(withId(R.id.email)).perform(typeText("irocha1@usc.edu"), closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(typeText("1234567"), closeSoftKeyboard());
+        onView(withId(R.id.login)).perform(click());
+        Thread.sleep(10000);
+        onView(withId(R.id.login)).check(matches(isDisplayed()));
     }
 }
