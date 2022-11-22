@@ -25,35 +25,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TestCancelReminder {
-    private String email = "irocha@usc.edu";
+    private String email = "abc@gmail.com";
     private String password = "123456";
-
-    public static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {
-        return new TypeSafeMatcher<View>() {
-            int currentIndex = 0;
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with index: ");
-                description.appendValue(index);
-                matcher.describeTo(description);
-            }
-
-            @Override
-            public boolean matchesSafely(View view) {
-                return matcher.matches(view) && currentIndex++ == index;
-            }
-        };
-    }
 
     @Rule
     public ActivityScenarioRule<LandingActivity> landingActivityActivityScenarioRule
             = new ActivityScenarioRule<>(LandingActivity.class);
-/*
+
     @Test
     public void TestCancelReminder() throws InterruptedException{
         onView(withId(R.id.login)).perform(click());
-        Thread.sleep(2000);
         onView(withId(R.id.email)).perform(typeText(email), closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText(password), closeSoftKeyboard());
         onView(withId(R.id.login)).perform(click());
@@ -61,10 +42,7 @@ public class TestCancelReminder {
         onView(withId(R.id.button2)).perform(click());
         Thread.sleep(2000);
         onView(withText("Cancel Reminder")).perform(click());
-        onView(withIndex(withText("Cancel Reminder"), 1)).perform(click());
         Thread.sleep(5000);
     }
-
- */
 
 }

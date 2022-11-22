@@ -7,23 +7,23 @@
 
     <string-array name="spinner_destinations">
         <item>Amazon</item>
-        <item>CAVA</item>
+        <item>Cava</item>
         <item>Chinese Street Food</item>
         <item>City Tacos</item>
-        <item>DULCE</item>
+        <item>Cafe Dulce</item>
         <item>Greenleaf</item>
         <item>HoneyBird</item>
         <item>Il Giardino</item>
         <item>Insomnia Cookies</item>
-        <item>Kobunga</item>
+        <item>Kobunga Korean Grill</item>
         <item>Ramen Kenjo</item>
-        <item>Rock n Reilly\'s</item>
-        <item>Sammiche Shoppe</item>
+        <item>Rock &amp; Reilly\'s</item>
+        <item>The Sammiche Shoppe</item>
         <item>Starbucks</item>
-        <item>Stout Burgers</item>
+        <item>Stout Burger</item>
         <item>Sunlife Organics</item>
         <item>Target</item>
-        <item>Trader Joe\s</item>
+        <item>Trader Joe\'s</item>
 
     </string-array>
 
