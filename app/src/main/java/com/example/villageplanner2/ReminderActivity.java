@@ -150,9 +150,9 @@ public class ReminderActivity extends AppCompatActivity {
                     displayReminders.addView(timeOfReminder);
                     displayReminders.addView(cancelButton);
 
-                    Notification notification = setNotification("Start heading towards " + reminder.getDestination(), "You will arrive by " + reminder.getTimeDisplay() +
-                            ". The current queue time is " + reminder.getQueueTime() / 60000 + " minutes." +
-                            " It will take you " + reminder.getDurationTime()/60000 + " minutes to walk there");
+                    Notification notification = setNotification("Head towards " + reminder.getDestination(), "Arrive by " + reminder.getTimeDisplay() +
+                            ". Wait time: " + reminder.getQueueTime() / 60000 + " mins." +
+                            " Walking time: " + reminder.getDurationTime()/60000 + " mins.");
                     Intent intent = new Intent(ReminderActivity.this, NotificationActivity.class);
                     intent.putExtra("notification", notification);
                     intent.putExtra("id", (int) reminder.getTime());
@@ -427,6 +427,10 @@ public class ReminderActivity extends AppCompatActivity {
         }
     }
 
+    public void setUsers(ArrayList<UserActivity> users) {
+        this.users = users;
+    }
+
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
         String start = "origin=" + origin.latitude + "," + origin.longitude;
         String end = "destination=" + dest.latitude + "," + dest.longitude;
@@ -475,4 +479,5 @@ public class ReminderActivity extends AppCompatActivity {
         }
         return data;
     }
+
 }
