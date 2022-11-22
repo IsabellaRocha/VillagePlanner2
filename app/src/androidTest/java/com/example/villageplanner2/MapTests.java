@@ -35,18 +35,31 @@ public class MapTests {
     public ActivityScenarioRule<LandingActivity> activityRule = new ActivityScenarioRule<>(LandingActivity.class);
 
     @Test
-    public void displayRouteTest() throws InterruptedException {
+    public void TestDisplayRoute() throws InterruptedException, UiObjectNotFoundException {
         onView(withId(R.id.login)).perform(click());
         onView(withId(R.id.email)).perform(typeText(email), closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText(password), closeSoftKeyboard());
         onView(withId(R.id.login)).perform(click());
         Thread.sleep(5000);
-        //onView(withId(R.id.store)).perform(click());
-        onData(allOf(is(instanceOf(String.class)), is("CAVA"))).perform(click());
         UiDevice device = UiDevice.getInstance(getInstrumentation());
-        UiObject storeMarkerOne = device.findObject(new UiSelector().descriptionContains("CAVA"));
-        UiObject myMarkerOne = device.findObject(new UiSelector().descriptionContains("My Location"));
-        UiObject routeOne = device.findObject(new UiSelector().descriptionContains("Route"));
+        UiObject storeMarkerOne = device.findObject(new UiSelector().descriptionContains("Target"));
+        storeMarkerOne.click();
+        Thread.sleep(5000);
+    }
 
+    @Test
+    public void TestDisplayReRoute() throws InterruptedException, UiObjectNotFoundException {
+        onView(withId(R.id.login)).perform(click());
+        onView(withId(R.id.email)).perform(typeText(email), closeSoftKeyboard());
+        onView(withId(R.id.password)).perform(typeText(password), closeSoftKeyboard());
+        onView(withId(R.id.login)).perform(click());
+        Thread.sleep(5000);
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
+        UiObject storeMarkerOne = device.findObject(new UiSelector().descriptionContains("Target"));
+        storeMarkerOne.click();
+        Thread.sleep(7000);
+        UiObject storeMarkerTwo = device.findObject(new UiSelector().descriptionContains("Sunlife Organics"));
+        storeMarkerTwo.click();
+        Thread.sleep(2000);
     }
 }
