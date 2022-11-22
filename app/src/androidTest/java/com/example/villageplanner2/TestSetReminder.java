@@ -17,7 +17,6 @@ import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 
@@ -37,28 +36,23 @@ public class TestSetReminder {
     public ActivityScenarioRule<LandingActivity> landingActivityActivityScenarioRule
             = new ActivityScenarioRule<>(LandingActivity.class);
 
-    public void wait(int time) {
-        long stopWait = System.currentTimeMillis() + time;
-        while (System.currentTimeMillis() < stopWait);
-    }
-
     @Test
-    public void TestSetReminderWithValidTime() {
+    public void TestSetReminderWithValidTime() throws InterruptedException {
         long reminderTime = System.currentTimeMillis() + 12*60000;
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         String time = df.format(new Date(reminderTime));
         int hour = Integer.parseInt(time.substring(0, 2));
         int min = Integer.parseInt(time.substring(3, 5));
         onView(withId(R.id.login)).perform(click());
-        wait(2000);
+        Thread.sleep(2000);
         onView(withId(R.id.email)).perform(typeText(email), closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText(password), closeSoftKeyboard());
         onView(withId(R.id.login)).perform(click());
-        wait(5000);
+        Thread.sleep(5000);
         onView(withId(R.id.button2)).perform(click());
-        wait(2000);
+        Thread.sleep(2000);
         onView(withId(R.id.setReminder)).perform(click());
-        wait(2000);
+        Thread.sleep(2000);
         onView(withId(R.id.timePicker)).perform(PickerActions.setTime(hour, min));
         onView(withId(R.id.store)).perform(click());
         onData(anything()).inRoot(isPlatformPopup()).atPosition(16).perform(click());
@@ -66,27 +60,27 @@ public class TestSetReminder {
     }
 
     @Test
-    public void TestSetReminderWithInvalidTime() {
+    public void TestSetReminderWithInvalidTime() throws InterruptedException{
         long reminderTime = System.currentTimeMillis() - 12*60000;
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         String time = df.format(new Date(reminderTime));
         int hour = Integer.parseInt(time.substring(0, 2));
         int min = Integer.parseInt(time.substring(3, 5));
         onView(withId(R.id.login)).perform(click());
-        wait(2000);
+        Thread.sleep(2000);
         onView(withId(R.id.email)).perform(typeText(email), closeSoftKeyboard());
         onView(withId(R.id.password)).perform(typeText(password), closeSoftKeyboard());
         onView(withId(R.id.login)).perform(click());
-        wait(5000);
+        Thread.sleep(5000);
         onView(withId(R.id.button2)).perform(click());
-        wait(2000);
+        Thread.sleep(2000);
         onView(withId(R.id.setReminder)).perform(click());
-        wait(2000);
+        Thread.sleep(2000);
         onView(withId(R.id.timePicker)).perform(PickerActions.setTime(hour, min));
         onView(withId(R.id.store)).perform(click());
         onData(anything()).inRoot(isPlatformPopup()).atPosition(16).perform(click());
         onView(withId(R.id.confirmReminder)).perform(click());
-        wait(2000);
+        Thread.sleep(2000);
         onView(withId(R.id.timePicker)).inRoot(isDialog()).check(matches(isDisplayed()));
     }
 }
