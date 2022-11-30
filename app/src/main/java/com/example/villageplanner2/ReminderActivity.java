@@ -308,63 +308,64 @@ public class ReminderActivity extends AppCompatActivity {
     }
 
     public void storeInfo(){
-        Destination p1 = new Destination("Cava",34.02509105209718, -118.28452043192465);
+        Destination p1 = new Destination("Cava",34.02509105209718, -118.28452043192465, "https://www.ubereats.com/brand/cava", "2132129838");
         destinations.add(p1);
 
-        Destination p2 = new Destination("Insomnia Cookies", 34.02502880426814, -118.28534289035802);
+        Destination p2 = new Destination("Insomnia Cookies", 34.02502880426814, -118.28534289035802, "https://www.grubhub.com/restaurant/insomnia-cookies-929-w-jefferson-blvd-los-angeles/3167475", "2132620434");
         destinations.add(p2);
 
-        Destination p3 = new Destination("Chinese Street Food", 34.02460072922757, -118.2840309620744);
+        Destination p3 = new Destination("Chinese Street Food", 34.02460072922757, -118.2840309620744, "https://www.doordash.com/store/chinese-street-food-los-angeles-2334200/", "2135365161");
         destinations.add(p3);
 
-        Destination p4 = new Destination("City Tacos", 34.0242002463869, -118.28462466449264);
+        Destination p4 = new Destination("City Tacos", 34.0242002463869, -118.28462466449264, "https://www.toasttab.com/city-tacos-la-835-w-jefferson-blvd-suite-1735/v3", "2135365203");
         destinations.add(p4);
 
-        Destination p5 = new Destination("Cafe Dulce", 34.025509629008425, -118.28556220292455);
+        Destination p5 = new Destination("Cafe Dulce", 34.025509629008425, -118.28556220292455, "https://www.zmenu.com/cafe-dulce-los-angeles-online-menu/", "2135365609");
         destinations.add(p5);
 
-        Destination p6 = new Destination("Greenleaf", 34.024738299179795, -118.2852476966357);
+        Destination p6 = new Destination("Greenleaf", 34.024738299179795, -118.2852476966357, "https://www.grubhub.com/restaurant/greenleaf-kitchen-and-cocktails-929-w-jefferson-blvd-ste-1650-los-angeles/724152", "2133142180");
         destinations.add(p6);
 
-        Destination p7 = new Destination("HoneyBird", 34.02487472280556, -118.28451183795357);
+        Destination p7 = new Destination("HoneyBird", 34.02487472280556, -118.28451183795357, "https://www.grubhub.com/restaurant/honeybird-3201-s-hoover-st-los-angeles/2843207", "2135365790");
         destinations.add(p7);
 
-        Destination p8 = new Destination("Il Giardino", 34.02522997239766, -118.28436170636583);
+        Destination p8 = new Destination("Il Giardino", 34.02522997239766, -118.28436170636583, "https://www.grubhub.com/restaurant/il-giardino-ristorante-3201-s-hoover-st-los-angeles/2159905", "2135365773");
         destinations.add(p8);
 
-        Destination p9 = new Destination("Kobunga Korean Grill", 34.024550, -118.285630);
+        Destination p9 = new Destination("Kobunga Korean Grill", 34.024550, -118.285630, "https://www.grubhub.com/restaurant/kobunga-929-w-jefferson-blvd-los-angeles/2072514?=undefined&utm_source=google&utm_medium=cpc&utm_campaign=&utm_term=f%3Aaggregator_serp%3Afeature_id_fprint%3D3346941308294401851&utm_content=acct_id-3075806372%3Acamp_id-13458554394%3Aadgroup_id-125754513039%3Akwd-1020510017705%3Acreative_id-541975533282%3Aext_id-%3Amatchtype_id-%3Anetwork-g%3Adevice-c%3Aloc_interest-9073456%3Aloc_physical-9073456&gclid=Cj0KCQiAm5ycBhCXARIsAPldzoWolt43IeTOf9ZWg-FzTz7Y7qaOcXztHuJ0W3dGtG1FShwDmEpFRnUaAmXaEALw_wcB&gclsrc=aw.ds", "2135365886");
         destinations.add(p9);
 
-        Destination p10 = new Destination("Ramen Kenjo", 34.024841222085286, -118.28560863622855);
+        Destination p10 = new Destination("Ramen Kenjo", 34.024841222085286, -118.28560863622855, "https://www.grubhub.com/restaurant/ramen-kenjo-929-w-jefferson-blvd-los-angeles/2091922", "2135365922");
         destinations.add(p10);
 
-        Destination p11 = new Destination("Rock & Reilly's", 34.0242612207765, -118.28420760939493);
+        Destination p11 = new Destination("Rock & Reilly's", 34.0242612207765, -118.28420760939493, "https://www.grubhub.com/restaurant/rock--reillys-usc-village-3201-s-hoover-st-ste-1810-los-angeles/1053715", "2135365584");
         destinations.add(p11);
 
-        Destination p12 = new Destination("The Sammiche Shoppe", 34.024843260346785, -118.28413445207798);
+        Destination p12 = new Destination("The Sammiche Shoppe", 34.024843260346785, -118.28413445207798, "https://www.grubhub.com/restaurant/the-sammiche-shoppe-3201-s-hoover-st-los-angeles/4760472", "2135365411");
         destinations.add(p12);
 
-        Destination p13 = new Destination("Starbucks", 34.025095105806514, -118.2840201269872);
+        Destination p13 = new Destination("Starbucks", 34.025095105806514, -118.2840201269872, "https://www.starbucks.com/ways-to-order/", "2134601662");
         destinations.add(p13);
 
-        Destination p14 = new Destination("Stout Burger", 34.024786259294224, -118.28470557210025);
+        Destination p14 = new Destination("Stout Burger", 34.024786259294224, -118.28470557210025, "https://www.grubhub.com/restaurant/stout-burgers--beers-11262-ventura-blvd-studio-city/1192846", "2135365058");
         destinations.add(p14);
 
-        Destination p15 = new Destination("Sunlife Organics", 34.02455900049386, -118.2853893524264);
+        Destination p15 = new Destination("Sunlife Organics", 34.02455900049386, -118.2853893524264, "https://postmates.com/store/sunlife-organics-usc-village/BXhbwXOCSpGxyJFNFVfzTA", "2135365659");
         destinations.add(p15);
 
-        Destination p16 = new Destination("Target", 34.02601553470601, -118.2841933874132);
+        Destination p16 = new Destination("Target", 34.02601553470601, -118.2841933874132, "https://www.target.com/?ref=tgt_adv_XS000000&AFID=google&fndsrc=tgtao&DFA=71700000012637812&CPNG=Other_Target%2BBrand%7CHoliday_Ecomm_Other&adgroup=Core+Branded+Keywords&LID=700000001170706&LNM=target&MT=e&network=g&device=" +
+                "c&location=9073456&targetid=aud-1879280307816:kwd-19131461&gclid=Cj0KCQiAm5ycBhCXARIsAPldzoU5UkzQiAkvnf8ImrmH1DZgiQkNK9xAj-QVpnTBBQ2fihjJ-8QxN7IaAoCbEALw_wcB&gclsrc=aw.ds", "2132753149");
         destinations.add(p16);
 
-        Destination p17 = new Destination("Trader Joe's",34.02609027051939, -118.28466969819833);
+        Destination p17 = new Destination("Trader Joe's",34.02609027051939, -118.28466969819833, "https://www.traderjoes.com/home", "2137491497");
         destinations.add(p17);
 
-        Destination p18 = new Destination("Amazon", 34.025699343998674, -118.28542115943962);
+        Destination p18 = new Destination("Amazon", 34.025699343998674, -118.28542115943962, "https://www.amazon.com/dp/B072MFYGSS/ref=as_sl_pc_as_ss_li_til?tag=deannanorris-20&linkCode=w00&linkId=a112aed00b92fa68ea132fe240f0430e&creativeASIN=B072MFYGSS&gclid=Cj0KCQi" +
+                "Am5ycBhCXARIsAPldzoV59vke7EdZI0QKqEGxffZaFB_sy-04GPLYGvv9CIuWRO71o0qDeFMaAmmaEALw_wcB", "1882804331");
         destinations.add(p18);
 
 
     }
-
     private class DownloadTask extends AsyncTask<String, Integer, String> {
 
         @Override

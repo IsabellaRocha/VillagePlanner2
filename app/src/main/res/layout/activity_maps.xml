@@ -10,6 +10,7 @@
     tools:context=".MapActivity">
 
     <LinearLayout
+        android:id="@+id/topBar"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,6 +29,13 @@
             android:layout_marginHorizontal="50dp"
             android:layout_marginVertical="25dp"
             android:gravity="right"/>
+
+        <LinearLayout
+            android:id="@+id/numAndMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
     </LinearLayout>
 
     <fragment

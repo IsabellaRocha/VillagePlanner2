@@ -9,15 +9,21 @@ public class Destination {
     double lat;
     double lng;
     double waitTime;
+    String order;
+    String number;
+
 
     public Destination(){
 
     }
 
-    public Destination(String store, double lat, double lng){
+    public Destination(String store, double lat, double lng, String order, String number){
         this.store = store;
         this.lat = lat;
         this.lng = lng;
+        this.order = order;
+        this.number = number;
+
         latlng = new LatLng(lat, lng);
     }
 
@@ -44,5 +50,9 @@ public class Destination {
     public double getWaitTime() {
         return waitTime;
     }
+
+    public String getOrder() {return order;}
+
+    public String getNumber() {return number;}
 
 }
