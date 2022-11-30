@@ -79,6 +79,20 @@
             tools:ignore="TextContrastCheck" />
 
         <Button
+            android:id="@+id/button4"
+            android:layout_width="138dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/shiraz"
+            android:clickable="true"
+            android:onClick="NavigateToDisplayProfile"
+            android:text="@string/logout"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="35sp"
+            tools:ignore="TextContrastCheck" />
+
+        <Button
             android:id="@+id/button3"
             android:layout_width="138dp"
             android:layout_height="wrap_content"

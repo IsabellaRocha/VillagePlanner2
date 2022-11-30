@@ -49,6 +49,7 @@
         <activity android:name=".SignInActivity" />
         <activity android:name=".LogInActivity" />
         <activity android:name=".ReminderActivity" />
+        <activity android:name=".EditProfileActivity" />
 
         <receiver android:name=".NotificationActivity"/>
     </application>

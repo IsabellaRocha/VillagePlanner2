@@ -283,6 +283,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         startActivity(remindersIntent);
     }
 
+    public void NavigateToDisplayProfile(View view) {
+        Intent displayProfileIntent = new Intent(getApplicationContext(), EditProfileActivity.class);
+        startActivity(displayProfileIntent);
+    }
+
     public void LogOut(View view) {
         FirebaseAuth.getInstance().signOut();
         Toast.makeText(getApplicationContext(), "Logout successful!", Toast.LENGTH_LONG).show();
