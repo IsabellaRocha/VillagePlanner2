@@ -3,6 +3,7 @@
     <string name="title_activity_maps">USC Village Planner</string>
     <string name="compass">🗺</string>
     <string name="bell">🔔</string>
+    <string name="prof">👤</string>
     <string name="logout">📤</string>
 
     <string-array name="spinner_destinations">

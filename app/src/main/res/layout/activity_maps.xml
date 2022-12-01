@@ -94,7 +94,7 @@
             android:background="@color/shiraz"
             android:clickable="true"
             android:onClick="NavigateToDisplayProfile"
-            android:text="@string/logout"
+            android:text="@string/prof"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="35sp"
