@@ -22,18 +22,14 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="0dp"
             tools:srcCompat="@tools:sample/avatars" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Village Planner"
-            android:layout_marginHorizontal="50dp"
-            android:layout_marginVertical="25dp"
-            android:gravity="right"/>
 
         <LinearLayout
             android:id="@+id/numAndMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginVertical="25dp"
+            android:gravity="right"
             android:orientation="vertical" />
 
     </LinearLayout>

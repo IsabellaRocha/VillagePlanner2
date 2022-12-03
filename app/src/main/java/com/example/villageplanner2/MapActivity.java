@@ -15,6 +15,7 @@ import android.provider.ContactsContract;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -212,9 +213,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 ArrayList<String> numAndMenuToDisplay = (ArrayList<String>) marker.getTag();
                 String text = "<a href='" + numAndMenuToDisplay.get(1) + "'> " + marker.getTitle() + "</a>";
                 textView.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT));
+                textView.setGravity(Gravity.CENTER_HORIZONTAL);
+                textView.setTextSize(18);
+
 
                 TextView number = new TextView(MapActivity.this);
                 number.setText(numAndMenuToDisplay.get(0));
+                number.setGravity(Gravity.CENTER_HORIZONTAL);
+                number.setTextSize(17);
 
                 display.addView(textView);
                 display.addView(number);

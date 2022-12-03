@@ -49,25 +49,22 @@ public class EditProfileActivity extends AppCompatActivity {
                 UserActivity currUser = dataSnapshot.getValue(UserActivity.class);
                 Picasso.with(EditProfileActivity.this).load(currUser.getProfilePhoto()).into(imageView);
 
+
                 TextView firstName = new TextView(EditProfileActivity.this);
                 firstName.setText("First Name: " + currUser.getFirstName());
+                firstName.setTextSize(20);
 
                 TextView lastName = new TextView(EditProfileActivity.this);
                 lastName.setText("Last Name: " + currUser.getLastName());
+                lastName.setTextSize(20);
 
                 TextView email = new TextView(EditProfileActivity.this);
                 email.setText("Email: " + currUser.getEmail());
-
-                EditText profilePhotoEdit = new EditText(EditProfileActivity.this);
-                profilePhotoEdit.setText(currUser.getProfilePhoto());
-                TextView profilePhoto = new TextView(EditProfileActivity.this);
-                profilePhoto.setText("Profile Photo URL: ");
+                email.setTextSize(20);
 
                 profileInfo.addView(firstName);
                 profileInfo.addView(lastName);
                 profileInfo.addView(email);
-                profileInfo.addView(profilePhoto);
-                profileInfo.addView(profilePhotoEdit);
             }
 
             @Override
